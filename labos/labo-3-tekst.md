@@ -31,7 +31,7 @@ Maak ook een bestand aan met de naam `autokentekens` met deze inhoud:
 1. Hoe start je Vi op om deze bestanden aan te maken?
 
     ```
-    $ COMMANDO
+    $ vim [:saveas <> in tekst om naam te geven of naam direct na `vim`
     UITVOER
     ```
 
@@ -39,21 +39,21 @@ Maak ook een bestand aan met de naam `autokentekens` met deze inhoud:
 
     | Invoegen vanaf                  | Commando |
     | :---                            | :---     |
-    | op de huidige cursorpositie     | `X`      |
-    | rechts van de cursor            | `X`      |
-    | begin van huidige regel         | `X`      |
-    | einde van huidige regel         | `X`      |
-    | regel toevoegen onder deze      | `X`      |
-    | regel toevoegen op huidige lijn | `X`      |
+    | op de huidige cursorpositie     | `a`      |
+    | rechts van de cursor            | `A`      |
+    | begin van huidige regel         | `I`      |
+    | einde van huidige regel         | `A`      |
+    | regel toevoegen onder deze      | `o`      |
+    | regel toevoegen op huidige lijn | `O`      |
 
 3. Hoe kopieer je vanuit *normal mode*?
 
     | Te kopiëren                              | Commando |
     | :---                                     | :---     |
-    | Huidige regel                            | `X`      |
-    | Huidige regel en die eronder             | `X`      |
-    | Het huidige woord                        | `X`      |
-    | Het huidige en de twee volgende woorden  | `X`      |
+    | Huidige regel                            | `yy`     |
+    | Huidige regel en die eronder             | `2yy`    |
+    | Het huidige woord                        | `yiw`    |
+    | Het huidige en de twee volgende woorden  | `3yiw`   |
     | Van de cursor tot het einde van de regel | `X`      |
     | Tot het einde van de *zin*               | `X`      |
     | Tot het einde van de *paragraaf*         | `X`      |
@@ -92,14 +92,14 @@ In onderstaande vragen is het telkens de bedoeling één commando te geven om de
 1. Voeg het bestand `landen` en `autokentekens` samen met het commando `join` (zoek de werking ervan op met het man-commando). Het resultaat wordt opgeslagen in het bestand `landenkentekens`.
 
     ```
-    $ COMMANDO
+    $ join landen autotekens > landenkentekens
     UITVOER
     ```
 
 2. Bekijk de inhoud van `landenkentekens` en controleer of het overeenkomt met de uitvoer hieronder.
 
     ```
-    $ COMMANDO
+    $ cat landenkentekens
     1 België B
     2 Frankrijk F
     3 Zwitserland CH
@@ -110,7 +110,7 @@ In onderstaande vragen is het telkens de bedoeling één commando te geven om de
 3. Haal uit `landenkentekens` alleen kolom 2 en kolom 3 eruit en sla dit resultaat op als `landenkentekens2`.
 
     ```
-    $ COMMANDO
+    $ cut -d' ' -f2,3 landenkentekens > landenkentekens2
     UITVOER
     ```
 
@@ -128,16 +128,16 @@ In onderstaande vragen is het telkens de bedoeling één commando te geven om de
 5. Voeg vanop de command-line Italië en Spanje toe aan het einde van `landenkentekens2` met hun respectievelijke kentekens. Je mag hier voor elk land een apart commando gebruiken.
 
     ```
-    $ COMMANDO
+    $ echo [tekst] >> landenkentekens2
     UITVOER
     ```
 
 6. Sorteer `landenkentekens2` alfabetisch op de autokentekens. Sla het bekomen resultaat op in `gesorteerdeautokentekens`. Controleer het resultaat.
 
     ```
-    $ COMMANDO
-    UITVOER
-    $ COMMANDO
+    $ sort -k2 landenkentekens2 > gesorteerdeautotekens
+
+    $cat gesorteerdeautotekens
     België B
     Zwitserland CH
     Duitsland D
@@ -156,7 +156,8 @@ Sommige van onderstaande oefeningen maken gebruik van specifieke tekstbestanden 
 1. Bekijk de uitvoer van het commando `ip a` (opvragen van de IP-adressen van deze host). Filter de IPv4 (niet IPv6) adressen er uit:
 
     ```
-    $ COMMANDO
+    $ ip a | grep 'inet ' | cut -d' ' -f 6   OF   ip a | grep 'inet ' | awk '{print $2;}' OF ip a | awk '/inet[^6]/ {print $2}'
+
     127.0.0.1/8
     10.0.2.15/24
     192.168.56.101/24
@@ -169,14 +170,14 @@ Deze oefeningen gebeuren met `lorem.txt`
 1. Tel het aantal regels, wooren en tekens in `lorem.txt`
 
     ```
-    $ COMMANDO
+    $ wc -l -w -c lorem.txt
       45  404 2738 lorem.txt
     ```
 
 2. Herformatteer `lorem.txt` zodat elke tekstregel max. 50 lettertekens bevat en nummer daarna elke (niet-lege) regel. Het resultaat wordt weggeschreven in een nieuw bestand, `nlorem.txt`.
 
     ```
-    $ COMMANDO
+    $ fmt -w 50 lorem.txt | grep -v '^$'  | cat -n > nlorem.txt
     UITVOER
     ```
 
@@ -186,9 +187,9 @@ Deze oefeningen gebeuren met `lorem.txt`
     - Sorteer de woorden (niet hoofdlettergevoelig)
     - Maak een lijst met voor elk woord het aantal keer dat het voorkomt
     - Sorteer op het aantal voorkomens en behoud de alfabetische sortering van de woorden
-
+cle
     ```
-    $ COMMANDO
+    ------$ cat lorem.txt | tr [:space:] '\n' | grep -v "^\s*$" | sort -f | uniq -ci | sort -bnr
      11 sed 
      10 et 
       8 quis 
