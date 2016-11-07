@@ -16,7 +16,12 @@ Het is belangrijk dat je controleert voordat je aan dit labo begint, dat je twee
 
 Beschrijf hier de exacte procedure hoe je dit uitgevoerd hebt. Zorg er voor dat je aan de hand van je beschrijving deze taken later heel vlot kan herhalen als dat nodig is. Test ook telkens na elke stap dat die correct verlopen is.
 
-1. ...
+1. dnf install httpd 
+2. systemctl enable httpd.service
+3. systemctl start httpd.service
+4. firewall-cmd --permanent --add-service=http
+5. firewall-cmd --permanent --add-service=https
+
 
 ## MariaDB (MySQL)
 
@@ -27,7 +32,10 @@ MariaDB is de naam van een variant (fork) van de bekende database MySQL. Onder F
 
 Beschrijf hier de exacte procedure hoe je dit uitgevoerd hebt. Zorg er voor dat je aan de hand van je beschrijving deze taken later heel vlot kan herhalen als dat nodig is. Test ook telkens na elke stap dat die correct verlopen is.
 
-1. ...
+1. dnf install mariadb-server
+2. systemctl enable mariadb.service  
+3. systemctl start mariadb.service  
+4. mysql_secure_installation
 
 ## Webapplicatie
 
@@ -38,47 +46,69 @@ Kies een webapplicatie gebaseerd op PHP en installeer op je webserver. Enkele vo
 
 Beschrijf hier de exacte procedure hoe je dit uitgevoerd hebt. Zorg er voor dat je aan de hand van je beschrijving deze taken later heel vlot kan herhalen als dat nodig is. Test ook telkens na elke stap dat die correct verlopen is.
 
-1. ...
+1. dnf install php php-common 
+2. dnf install php-mysql php-gd php-cli php-mbstring
+3. systemctl restart httpd 
+4. vi /var/www/html/info.php
+	--> 	<?php
+		phpinfo()
+		?>
 
 ## Netwerkconfiguratie en troubleshooting
 
 1. Welk(e) IP-adres(sen) heeft je VM? Vul onderstaande tabel aan (voeg rijen toe zoveel als nodig). Welk commando gebruikte je?
 
     ```
-    $ COMMANDO
+    $ ip a
     UITVOER
     ```
 
-    | Interface | IP-adres | Netwerkmasker |
-    | :---      | :---     | :---          |
-    |           |          |               |
+    | Interface | IP-adres          |   Netwerkmasker  |
+    | :ens33    | :192.168.111. 130 | :255.255.255.0   |
+    | :ens37    | :192.168.127.130  | :255.255.255.0   |
+    | :lo       | :127.0.0.1        | :255.0.0.0       |
 
 2. Via welke router/default gateway kan je VM naar het Internet? Welk commando gebruikte je?
 
     ```
-    $ COMMANDO
-    UITVOER
+    $ ip r
+    default via 192.168.111.2 dev ens33  proto static  metric 100 
+    192.168.111.0/24 dev ens33  proto kernel  scope link  src 192.168.111.130  metric 100 
+    92.168.127.0/24 dev ens37  proto kernel  scope link  src 192.168.127.130  metric 100 
+    
     ```
 
 3. Wat is het IP-adres van `www.hogent.be`?
 
     ```
-    $ COMMANDO
-    UITVOER
+    $ ping hogent.be
+    178.62.144.90
     ```
 
 4. Om het IP-adres van websites en dergelijke op te kunnen vragen, moet je VM kunnen contact maken met een DNS-server. Hoe weet Linux welke DNS-server(s) beschikbaar is/zijn? Geef het configuratiebestand en de huidige inhoud ervan.
 
     ```
-    $ COMMANDO
-    UITVOER
+    $ cat /etc/resolv.conf
+	OF nmcli dev show | grep DNS
+    IP4.DNS[1]:                             192.168.111.2
+    IP4.DNS[1]:                             192.168.127.1
+
     ```
 
 5. In welk(e) configuratiebestanden worden de instellingen van je netwerkinterfaces bijgehouden? Geef hieronder telkens ook de inhoud van deze bestanden:
 
     ```
-    $ COMMANDO
-    UITVOER
+    $ nmcli dev show
+    GENERAL.DEVICE:                         ens33
+    GENERAL.TYPE:                           ethernet
+    GENERAL.HWADDR:                         00:0C:29:FA:3E:39
+    GENERAL.MTU:                            1500
+    GENERAL.STATE:                          100 (connected)
+    GENERAL.CONNECTION:                     ens33
+    GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/2
+    WIRED-PROPERTIES.CARRIER:               on
+    IP4.ADDRESS[1]:                         192.168.111.130/24
+
     ```
 
 6. Met welk commando test je of een host op het netwerk op dit moment online is? Probeer dit uit  vanop je VM met het IP-adres van je host-systeem en voeg de uitvoer hieronder in. Welk protocol uit de TCP/IP familie wordt door deze tool gebruikt?
